@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Encryption Flow — File Upload</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1117;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 48px;
+    min-width: 860px;
+  }
+  h1 { color: #e2e8f0; font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .subtitle { color: #64748b; font-size: 13px; margin-bottom: 44px; }
+
+  .flow {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    align-items: center;
+  }
+
+  /* ── Boxes ── */
+  .box {
+    border-radius: 10px;
+    padding: 14px 24px;
+    font-size: 13.5px;
+    font-weight: 600;
+    text-align: center;
+    min-width: 260px;
+    max-width: 340px;
+    position: relative;
+  }
+  .box-data    { background: #1e293b; color: #e2e8f0; border: 1.5px solid #334155; }
+  .box-aes     { background: #1e3a5f; color: #93c5fd; border: 1.5px solid #3b82f6; }
+  .box-rsa     { background: #2d1f52; color: #c4b5fd; border: 1.5px solid #8b5cf6; }
+  .box-hash    { background: #1a2e1a; color: #86efac; border: 1.5px solid #22c55e; }
+  .box-server  { background: #1c1f2b; color: #94a3b8; border: 1.5px solid #475569; }
+  .box-meta    { background: #2a1f1a; color: #fdba74; border: 1.5px solid #f97316; }
+
+  .box-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.2px;
+    text-transform: uppercase;
+    opacity: 0.6;
+    margin-bottom: 4px;
+  }
+  .box-value {
+    font-size: 13.5px;
+    font-weight: 600;
+  }
+
+  /* ── Connectors ── */
+  .connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 6px 0;
+  }
+  .connector-line {
+    width: 2px;
+    height: 22px;
+    background: #334155;
+  }
+  .connector-arrow {
+    width: 0; height: 0;
+    border-left: 7px solid transparent;
+    border-right: 7px solid transparent;
+    border-top: 10px solid #334155;
+  }
+  .connector-label {
+    font-size: 11px;
+    color: #64748b;
+    font-style: italic;
+    margin: 2px 0;
+  }
+
+  /* ── Row layout for parallel boxes ── */
+  .row {
+    display: flex;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: center;
+  }
+  .row-connector {
+    display: flex;
+    gap: 24px;
+    justify-content: center;
+  }
+  .single-connector {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* ── Merge indicator ── */
+  .merge-bar {
+    height: 3px;
+    background: linear-gradient(to right, #3b82f6, #8b5cf6, #22c55e);
+    border-radius: 2px;
+    width: 500px;
+    margin: 4px 0;
+  }
+
+  /* ── Section dividers ── */
+  .section-label {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #334155;
+    margin: 32px 0 20px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 680px;
+  }
+  .section-label::before, .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #1e293b;
+  }
+</style>
+</head>
+<body>
+
+<h1>Encryption Flow — File Upload</h1>
+<p class="subtitle">How a file is encrypted on the client before being sent to the server</p>
+
+<div class="flow">
+
+  <!-- INPUT -->
+  <div class="section-label">Input</div>
+
+  <div class="box box-data">
+    <div class="box-label">Original File</div>
+    <div class="box-value">plaintext bytes</div>
+  </div>
+
+  <!-- SPLIT -->
+  <div style="display:flex; gap:120px; margin:16px 0;">
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div class="connector-line"></div>
+      <div class="connector-arrow"></div>
+    </div>
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div class="connector-line"></div>
+      <div class="connector-arrow"></div>
+    </div>
+  </div>
+
+  <!-- PARALLEL: AES + HASH -->
+  <div class="section-label">Client — parallel operations</div>
+
+  <div class="row">
+
+    <!-- LEFT: AES path -->
+    <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
+      <div class="box box-aes" style="min-width:230px;">
+        <div class="box-label">Generate Random</div>
+        <div class="box-value">AES-256 key (32 bytes)<br>IV / nonce (12 bytes)</div>
+      </div>
+      <div class="connector"><div class="connector-line"></div><div class="connector-arrow"></div></div>
+      <div class="box box-aes" style="min-width:230px;">
+        <div class="box-label">Encrypt with AES-256-GCM</div>
+        <div class="box-value">ciphertext + auth tag</div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Hash path -->
+    <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
+      <div class="box box-hash" style="min-width:230px;">
+        <div class="box-label">Compute</div>
+        <div class="box-value">SHA-256(plaintext)</div>
+      </div>
+      <div style="display:flex; flex-direction:column; align-items:center; padding:6px 0;">
+        <div class="connector-line"></div>
+        <div class="connector-arrow"></div>
+      </div>
+      <div class="box box-hash" style="min-width:230px;">
+        <div class="box-label">Integrity fingerprint</div>
+        <div class="box-value">file_hash (hex string)</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- AES KEY → RSA -->
+  <div style="display:flex; gap:24px; margin:16px 0; justify-content:center; align-items:flex-start;">
+    <div style="display:flex; flex-direction:column; align-items:center;">
+      <div class="connector-line"></div>
+      <div class="connector-arrow"></div>
+    </div>
+    <div style="width:246px;"></div><!-- spacer for hash column -->
+  </div>
+
+  <div style="display:flex; gap:24px; justify-content:center; align-items:flex-start;">
+    <div style="display:flex; flex-direction:column; align-items:center; gap:0;">
+      <div class="box box-rsa" style="min-width:230px;">
+        <div class="box-label">Wrap key with RSA-2048-OAEP</div>
+        <div class="box-value">encrypted_aes_key<br><span style="font-size:11px; opacity:0.7;">(using client's public_key.pem)</span></div>
+      </div>
+      <div class="connector"><div class="connector-line"></div><div class="connector-arrow"></div></div>
+      <div class="box box-aes" style="min-width:230px;">
+        <div class="box-label">Base64 encode</div>
+        <div class="box-value">encoded_key · encoded_iv</div>
+      </div>
+    </div>
+    <div style="width:246px;"></div>
+  </div>
+
+  <!-- MERGE -->
+  <div class="section-label">Transmitted to server (over TLS)</div>
+
+  <div class="merge-bar"></div>
+
+  <div class="box box-server" style="max-width:500px; min-width:500px; margin-top:8px;">
+    <div class="box-label">JSON metadata sent first</div>
+    <div class="box-value" style="font-size:12px; text-align:left; line-height:1.8;">
+      filename · file_size · <span style="color:#c4b5fd">encrypted_key</span> · <span style="color:#93c5fd">iv</span> · <span style="color:#86efac">file_hash</span>
+    </div>
+  </div>
+
+  <div class="connector"><div class="connector-line"></div><div class="connector-arrow"></div></div>
+
+  <div class="box box-server" style="max-width:500px; min-width:500px;">
+    <div class="box-label">Ciphertext stream</div>
+    <div class="box-value">encrypted bytes sent in 4 KB chunks</div>
+  </div>
+
+  <!-- SERVER STORES -->
+  <div class="section-label">Server — stores</div>
+
+  <div class="row">
+    <div class="box box-server" style="min-width:200px;">
+      <div class="box-label">server_files/&lt;user_id&gt;/</div>
+      <div class="box-value">filename (ciphertext)</div>
+    </div>
+    <div class="box box-meta" style="min-width:200px;">
+      <div class="box-label">metadata/&lt;user_id&gt;/filename.meta.json</div>
+      <div class="box-value" style="font-size:12px; line-height:1.8; text-align:left;">
+        encrypted_key<br>iv<br>file_hash
+      </div>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

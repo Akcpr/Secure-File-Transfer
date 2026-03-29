@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>RBAC & Security Layers</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1117;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 48px;
+    min-width: 860px;
+  }
+  h1 { color: #e2e8f0; font-size: 22px; font-weight: 600; margin-bottom: 6px; }
+  .subtitle { color: #64748b; font-size: 13px; margin-bottom: 44px; }
+
+  /* ── Section title ── */
+  .section-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase;
+    color: #475569; margin: 36px 0 16px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .section-title::before, .section-title::after { content: ''; flex: 1; height: 1px; background: #1e293b; }
+
+  /* ── RBAC table ── */
+  .rbac-table { width: 100%; border-collapse: separate; border-spacing: 0; border-radius: 12px; overflow: hidden; }
+  .rbac-table th {
+    padding: 12px 20px; font-size: 12px; font-weight: 700; letter-spacing: 0.8px;
+    text-transform: uppercase; text-align: left;
+  }
+  .rbac-table td { padding: 11px 20px; font-size: 13px; border-top: 1px solid #1e293b; }
+  .th-action  { background: #111827; color: #64748b; width: 50%; }
+  .th-user    { background: #1e3a5f; color: #93c5fd; width: 25%; text-align: center; }
+  .th-admin   { background: #1a3a2a; color: #86efac; width: 25%; text-align: center; }
+  .td-action  { background: #111827; color: #cbd5e1; }
+  .td-cell    { text-align: center; font-size: 16px; }
+  .td-user    { background: #111e2e; }
+  .td-admin   { background: #0f1e12; }
+  tr:hover .td-action, tr:hover .td-user, tr:hover .td-admin { filter: brightness(1.15); }
+  .yes { color: #4ade80; }
+  .no  { color: #ef4444; }
+
+  /* ── Security layers ── */
+  .layers { display: flex; flex-direction: column; gap: 10px; }
+  .layer {
+    display: flex; align-items: center; gap: 0;
+    border-radius: 10px; overflow: hidden;
+  }
+  .layer-num {
+    font-size: 13px; font-weight: 800; color: #0f1117;
+    padding: 16px 18px; min-width: 48px; text-align: center;
+  }
+  .layer-body { flex: 1; padding: 14px 20px; }
+  .layer-title { font-size: 13.5px; font-weight: 700; margin-bottom: 3px; }
+  .layer-desc  { font-size: 12px; opacity: 0.75; line-height: 1.5; }
+  .layer-tag {
+    font-size: 10px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 4px 10px; border-radius: 12px; white-space: nowrap; margin-right: 16px;
+  }
+
+  .l1 .layer-num { background: #fbbf24; }
+  .l1 .layer-body { background: #2a2200; border: 1.5px solid #92400e; color: #fde68a; }
+  .l1 .layer-tag  { background: #92400e55; color: #fde68a; border: 1px solid #92400e; }
+
+  .l2 .layer-num { background: #60a5fa; }
+  .l2 .layer-body { background: #0c1e38; border: 1.5px solid #1d4ed8; color: #bfdbfe; }
+  .l2 .layer-tag  { background: #1d4ed855; color: #bfdbfe; border: 1px solid #1d4ed8; }
+
+  .l3 .layer-num { background: #a78bfa; }
+  .l3 .layer-body { background: #190e38; border: 1.5px solid #6d28d9; color: #ddd6fe; }
+  .l3 .layer-tag  { background: #6d28d955; color: #ddd6fe; border: 1px solid #6d28d9; }
+
+  .l4 .layer-num { background: #34d399; }
+  .l4 .layer-body { background: #021a12; border: 1.5px solid #065f46; color: #a7f3d0; }
+  .l4 .layer-tag  { background: #065f4655; color: #a7f3d0; border: 1px solid #065f46; }
+
+  .l5 .layer-num { background: #fb923c; }
+  .l5 .layer-body { background: #1e0e00; border: 1.5px solid #9a3412; color: #fed7aa; }
+  .l5 .layer-tag  { background: #9a341255; color: #fed7aa; border: 1px solid #9a3412; }
+
+  .l6 .layer-num { background: #f472b6; }
+  .l6 .layer-body { background: #1e0a18; border: 1.5px solid #9d174d; color: #fbcfe8; }
+  .l6 .layer-tag  { background: #9d174d55; color: #fbcfe8; border: 1px solid #9d174d; }
+
+  /* ── Note ── */
+  .note {
+    background: #111827; border: 1px solid #1e293b; border-left: 3px solid #fbbf24;
+    border-radius: 8px; padding: 14px 18px; font-size: 12px; color: #94a3b8;
+    margin-top: 32px; line-height: 1.7;
+  }
+  .note strong { color: #fde68a; }
+</style>
+</head>
+<body>
+
+<h1>Role-Based Access Control & Security Layers</h1>
+<p class="subtitle">Who can do what, and how each security layer protects the system</p>
+
+<!-- RBAC -->
+<div class="section-title">Role-Based Access Control</div>
+
+<table class="rbac-table">
+  <thead>
+    <tr>
+      <th class="th-action">Action</th>
+      <th class="th-user">User</th>
+      <th class="th-admin">Admin</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td class="td-action">Upload a file</td>
+      <td class="td-cell td-user"><span class="yes">✓</span></td>
+      <td class="td-cell td-admin"><span class="yes">✓</span></td>
+    </tr>
+    <tr>
+      <td class="td-action">Download own files</td>
+      <td class="td-cell td-user"><span class="yes">✓</span></td>
+      <td class="td-cell td-admin"><span class="yes">✓</span></td>
+    </tr>
+    <tr>
+      <td class="td-action">List own files</td>
+      <td class="td-cell td-user"><span class="yes">✓</span></td>
+      <td class="td-cell td-admin"><span class="yes">✓</span></td>
+    </tr>
+    <tr>
+      <td class="td-action">Delete own files</td>
+      <td class="td-cell td-user"><span class="yes">✓</span></td>
+      <td class="td-cell td-admin"><span class="yes">✓</span></td>
+    </tr>
+    <tr>
+      <td class="td-action">List all users</td>
+      <td class="td-cell td-user"><span class="no">✗</span></td>
+      <td class="td-cell td-admin"><span class="yes">✓</span></td>
+    </tr>
+    <tr>
+      <td class="td-action">Delete any user</td>
+      <td class="td-cell td-user"><span class="no">✗</span></td>
+      <td class="td-cell td-admin"><span class="yes">✓</span></td>
+    </tr>
+    <tr>
+      <td class="td-action">List all files (all users)</td>
+      <td class="td-cell td-user"><span class="no">✗</span></td>
+      <td class="td-cell td-admin"><span class="yes">✓</span></td>
+    </tr>
+    <tr>
+      <td class="td-action">Delete any file</td>
+      <td class="td-cell td-user"><span class="no">✗</span></td>
+      <td class="td-cell td-admin"><span class="yes">✓</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<!-- SECURITY LAYERS -->
+<div class="section-title">Security Layers</div>
+
+<div class="layers">
+
+  <div class="layer l1">
+    <div class="layer-num">1</div>
+    <div class="layer-body">
+      <div class="layer-title">Transport Security — TLS/SSL</div>
+      <div class="layer-desc">All socket traffic is wrapped in TLS using a self-signed certificate. The client verifies the certificate before connecting, preventing man-in-the-middle attacks on the local network.</div>
+    </div>
+    <div class="layer-tag">TLS / SSL</div>
+  </div>
+
+  <div class="layer l2">
+    <div class="layer-num">2</div>
+    <div class="layer-body">
+      <div class="layer-title">File Confidentiality — AES-256-GCM</div>
+      <div class="layer-desc">Every file is encrypted with a freshly generated AES-256 key and a random 12-byte IV before leaving the client. AES-GCM is an authenticated mode — it detects any tampering of the ciphertext.</div>
+    </div>
+    <div class="layer-tag">AES-256-GCM</div>
+  </div>
+
+  <div class="layer l3">
+    <div class="layer-num">3</div>
+    <div class="layer-body">
+      <div class="layer-title">Key Transport — RSA-2048-OAEP</div>
+      <div class="layer-desc">The AES key is encrypted with the client's RSA-2048 public key using OAEP padding before being sent to the server. Only the client holding the matching private key can recover the AES key on download.</div>
+    </div>
+    <div class="layer-tag">RSA-2048-OAEP</div>
+  </div>
+
+  <div class="layer l4">
+    <div class="layer-num">4</div>
+    <div class="layer-body">
+      <div class="layer-title">File Integrity — SHA-256</div>
+      <div class="layer-desc">A SHA-256 hash of the original plaintext is computed before upload and stored with the metadata. After decryption on download, the hash is recomputed and compared — any corruption or tampering causes the file to be rejected.</div>
+    </div>
+    <div class="layer-tag">SHA-256</div>
+  </div>
+
+  <div class="layer l5">
+    <div class="layer-num">5</div>
+    <div class="layer-body">
+      <div class="layer-title">Password Protection — Salt + Pepper + Hash</div>
+      <div class="layer-desc">Passwords are hashed client-side using SHA-256 with a per-user salt (derived from the username) and a server-wide pepper (from the PASSWORD_PEPPER env var). The plaintext password never leaves the client.</div>
+    </div>
+    <div class="layer-tag">SHA-256 + salt + pepper</div>
+  </div>
+
+  <div class="layer l6">
+    <div class="layer-num">6</div>
+    <div class="layer-body">
+      <div class="layer-title">Session Management — UUID Tokens</div>
+      <div class="layer-desc">After login, a UUID session token is issued and tied to the socket file descriptor. Every command is validated against the session before execution. Sessions expire after 24 hours and are deleted on disconnect.</div>
+    </div>
+    <div class="layer-tag">UUID · 24h expiry</div>
+  </div>
+
+</div>
+
+<div class="note">
+  <strong>Note on password hashing:</strong> The current implementation uses SHA-256, which is fast and not ideal for password storage.
+  <code>argon2-cffi</code> is listed in <code>requirements.txt</code> and is the recommended replacement for a production deployment —
+  it is memory-hard and resistant to brute-force and GPU-based attacks.
+</div>
+
+</body>
+</html>

@@ -1,0 +1,45 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+
+# Virtual environments
+env/
+venv/
+.venv/
+
+# Environment / secrets
+.env
+
+# SSL certificates and keys (generated — do not commit)
+Server/certificate.pem
+Server/private_key.key
+Client/certificate.pem
+Client/private_key.pem
+Client/public_key.pem
+Server/public_cert_server/certificate.pem
+
+# TinyDB database (contains user data)
+Server/database.json
+
+# Server file storage (encrypted user files)
+Server/server_files/
+
+# Logs
+*.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+
+# Screenshots / test outputs (optional — remove this line to track them)
+Outputs_Screenshots/

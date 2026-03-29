@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>System Overview — Secure File Transfer</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: #0f1117;
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    padding: 48px;
+    min-width: 900px;
+  }
+
+  h1 {
+    color: #e2e8f0;
+    font-size: 22px;
+    font-weight: 600;
+    margin-bottom: 6px;
+    letter-spacing: 0.3px;
+  }
+  .subtitle {
+    color: #64748b;
+    font-size: 13px;
+    margin-bottom: 40px;
+  }
+
+  .diagram {
+    display: flex;
+    gap: 0;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  /* ── Columns ── */
+  .col {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0;
+  }
+  .col-client { width: 220px; }
+  .col-middle  { width: 340px; align-items: stretch; }
+  .col-server  { width: 220px; }
+
+  /* ── Actor headers ── */
+  .actor {
+    border-radius: 10px;
+    padding: 12px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    text-align: center;
+    width: 180px;
+  }
+  .actor-client { background: #1e3a5f; color: #93c5fd; border: 1.5px solid #3b82f6; }
+  .actor-server { background: #1a3a2a; color: #86efac; border: 1.5px solid #22c55e; }
+
+  /* ── Lifelines ── */
+  .lifeline {
+    width: 2px;
+    background: #1e293b;
+    flex: 1;
+    min-height: 20px;
+  }
+
+  /* ── Phase blocks ── */
+  .phase {
+    margin-bottom: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .phase-label {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: #475569;
+    margin-bottom: 12px;
+    padding: 6px 0;
+    border-top: 1px solid #1e293b;
+  }
+
+  /* ── Arrow rows ── */
+  .arrow-row {
+    display: flex;
+    align-items: center;
+    margin: 6px 0;
+    position: relative;
+  }
+
+  .arrow-line {
+    flex: 1;
+    height: 2px;
+    position: relative;
+  }
+  .arrow-line::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -5px;
+    border: 6px solid transparent;
+  }
+  .arrow-right { background: linear-gradient(to right, #3b82f6, #60a5fa); }
+  .arrow-right::after { border-left-color: #60a5fa; }
+  .arrow-left  { background: linear-gradient(to left,  #22c55e, #4ade80); }
+  .arrow-left::after { border-right-color: #4ade80; left: -1px; right: auto; }
+
+  .arrow-label {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 11.5px;
+    white-space: nowrap;
+    font-weight: 500;
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+  .lbl-right { color: #93c5fd; background: #1e3a5f88; }
+  .lbl-left  { color: #86efac; background: #1a3a2a88; }
+
+  /* side notes */
+  .side-note {
+    font-size: 10.5px;
+    color: #475569;
+    font-style: italic;
+    padding: 2px 8px;
+    white-space: nowrap;
+  }
+  .note-client { text-align: right; width: 200px; }
+  .note-server { text-align: left;  width: 200px; }
+
+  .spacer { height: 28px; }
+  .spacer-sm { height: 14px; }
+</style>
+</head>
+<body>
+
+<h1>System Overview — Secure File Transfer</h1>
+<p class="subtitle">Full communication sequence between Client and Server</p>
+
+<div style="display:flex; gap:40px; align-items:flex-start; justify-content:center;">
+
+  <!-- CLIENT LIFELINE -->
+  <div class="col col-client">
+    <div class="actor actor-client">CLIENT</div>
+    <div class="lifeline" style="height:1200px;"></div>
+  </div>
+
+  <!-- MIDDLE: arrows + phases -->
+  <div style="width:420px; padding-top:0;">
+
+    <!-- TLS -->
+    <div class="phase-label" style="margin-top:52px;">1 — TLS Handshake</div>
+
+    <div style="display:flex; align-items:center; margin:18px 0; position:relative;">
+      <div class="arrow-line arrow-right" style="flex:1;">
+        <span class="arrow-label lbl-right">TCP connect (port 9999)</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">TLS handshake (certificate.pem)</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">Welcome message (JSON)</span>
+      </div>
+    </div>
+
+    <!-- REGISTRATION -->
+    <div class="phase-label" style="margin-top:24px;">2 — Registration</div>
+
+    <div style="display:flex; align-items:center; margin:18px 0; position:relative;">
+      <div class="arrow-line arrow-right" style="flex:1;">
+        <span class="arrow-label lbl-right">check_username</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">available / duplicate</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-right" style="flex:1;">
+        <span class="arrow-label lbl-right">create_account (hash, public_key, role)</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">success</span>
+      </div>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="phase-label" style="margin-top:24px;">3 — Login</div>
+
+    <div style="display:flex; align-items:center; margin:18px 0; position:relative;">
+      <div class="arrow-line arrow-right" style="flex:1;">
+        <span class="arrow-label lbl-right">login (username, password_hash)</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">session token + role</span>
+      </div>
+    </div>
+
+    <!-- UPLOAD -->
+    <div class="phase-label" style="margin-top:24px;">4 — File Upload</div>
+
+    <div style="display:flex; align-items:center; margin:18px 0; position:relative;">
+      <div class="arrow-line arrow-right" style="flex:1;">
+        <span class="arrow-label lbl-right">upload_file (filename, enc_key, IV, hash)</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">ready</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-right" style="flex:1;">
+        <span class="arrow-label lbl-right">ciphertext chunks (4 KB each)</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">success</span>
+      </div>
+    </div>
+
+    <!-- DOWNLOAD -->
+    <div class="phase-label" style="margin-top:24px;">5 — File Download</div>
+
+    <div style="display:flex; align-items:center; margin:18px 0; position:relative;">
+      <div class="arrow-line arrow-right" style="flex:1;">
+        <span class="arrow-label lbl-right">download_file (filename)</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">ready + enc_key + IV + hash</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-left" style="flex:1;">
+        <span class="arrow-label lbl-left">ciphertext chunks</span>
+      </div>
+    </div>
+    <div style="display:flex; align-items:center; margin:30px 0; position:relative;">
+      <div class="arrow-line arrow-right" style="flex:1;">
+        <span class="arrow-label lbl-right">success (ack)</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SERVER LIFELINE -->
+  <div class="col col-server">
+    <div class="actor actor-server">SERVER</div>
+    <div class="lifeline" style="height:1200px;"></div>
+  </div>
+
+</div>
+
+<!-- Side notes panel -->
+<div style="margin-top:48px; border-top:1px solid #1e293b; padding-top:24px; display:flex; flex-wrap:wrap; gap:16px;">
+  <div style="background:#111827; border:1px solid #1e293b; border-radius:8px; padding:14px 18px; font-size:12px; color:#94a3b8; flex:1; min-width:200px;">
+    <div style="color:#93c5fd; font-weight:700; margin-bottom:6px;">Client stores locally</div>
+    private_key.pem · public_key.pem · certificate.pem
+  </div>
+  <div style="background:#111827; border:1px solid #1e293b; border-radius:8px; padding:14px 18px; font-size:12px; color:#94a3b8; flex:1; min-width:200px;">
+    <div style="color:#86efac; font-weight:700; margin-bottom:6px;">Server stores</div>
+    database.json (users, sessions) · server_files/ (ciphertext) · *.meta.json (enc_key, IV, hash)
+  </div>
+  <div style="background:#111827; border:1px solid #1e293b; border-radius:8px; padding:14px 18px; font-size:12px; color:#94a3b8; flex:1; min-width:200px;">
+    <div style="color:#fbbf24; font-weight:700; margin-bottom:6px;">All traffic</div>
+    Wrapped in TLS — plaintext never leaves the client unencrypted
+  </div>
+</div>
+
+</body>
+</html>

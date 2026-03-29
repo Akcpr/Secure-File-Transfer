@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Download Server Certificate</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: 'Roboto', Arial, sans-serif;
+            background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .card {
+            background: #fff;
+            border-radius: 18px;
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.15);
+            padding: 2.5rem 2rem 2rem 2rem;
+            max-width: 400px;
+            text-align: center;
+        }
+        h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3a4b;
+            margin-bottom: 0.5rem;
+        }
+        p {
+            color: #4a5a6a;
+            margin-bottom: 2rem;
+        }
+        .download-btn {
+            display: inline-block;
+            padding: 0.9rem 2.2rem;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #fff;
+            background: linear-gradient(90deg, #4f8cff 0%, #2355d8 100%);
+            border: none;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(79, 140, 255, 0.15);
+            text-decoration: none;
+            transition: background 0.2s, transform 0.2s;
+        }
+        .download-btn:hover {
+            background: linear-gradient(90deg, #2355d8 0%, #4f8cff 100%);
+            transform: translateY(-2px) scale(1.03);
+        }
+        .cert-icon {
+            font-size: 3rem;
+            color: #4f8cff;
+            margin-bottom: 1rem;
+        }
+        @media (max-width: 500px) {
+            .card {
+                padding: 1.5rem 0.5rem;
+                max-width: 95vw;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <div class="cert-icon">🔒</div>
+        <h1>Download Server Certificate</h1>
+        <p>
+            Click the button below to download the server's <b>certificate.pem</b> file.<br>
+            <small style="color:#888;">(You may need to trust this certificate on your device.)</small>
+        </p>
+        <a class="download-btn" href="certificate.pem" download>
+            ⬇️ Download certificate.pem
+        </a>
+    </div>
+</body>
+</html>
