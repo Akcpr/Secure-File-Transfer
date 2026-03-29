@@ -73,7 +73,7 @@ On registration the client generates an RSA key pair, validates the username/pas
 ### Role-Based Access Control & Security Layers
 Two roles are supported — `user` and `admin`. All commands are validated against the active session and the user's role before execution.
 
-![RBAC table and security layer breakdown](diagrams/RBAC_and_Security.png)
+![RBAC table and security layer breakdown](diagrams/Rbac_and_Security.png)
 
 ---
 
